@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request, render_template
+from flask import Flask, make_response, request, render_template, redirect, url_for
 
 app = Flask(__name__)
 
@@ -72,6 +72,17 @@ def index():
 def home():
     return "Hello World!"
 
+
+@app.route('/admin')
+def admin():
+    return redirect('/home')
+
+@app.route('/url_for')
+def admin():
+    return redirect(url_for('login'))
+@app.route('/login_page')
+def login():
+    return "<Login Page>"
 
 @app.route("/no_content")
 def no_content():
@@ -179,6 +190,13 @@ def saludo():
 def saludo_params(nombre, usuario):
     # Renderizar el HTML dinámico con los parámetros
     return render_template('saludo.html', nombre=nombre, usuario=usuario)
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    # password = request.form['password']
+    return render_template('saludo.html', nombre=username, usuario=username)
 
 
 @app.errorhandler(404)
