@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request
+from flask import Flask, make_response, request, render_template
 app = Flask(__name__)
 
 data = [
@@ -146,6 +146,21 @@ def add_by_uuid():
     except NameError:
         return {"message": "data not defined"}, 500
     return {"message": f"{new_person['id']}"}, 200
+
+@app.route('/saludo')
+def saludo():
+    # Obtener los parámetros de la URL
+    nombre = request.args.get('nombre', 'Invitado')
+    usuario = request.args.get('usuario', 'Usuario')
+
+    # Renderizar el HTML dinámico con los parámetros
+    return render_template('saludo.html', nombre=nombre, usuario=usuario)
+
+@app.route('/saludo/<nombre>/<usuario>')
+def saludo_params(nombre, usuario):
+    # Renderizar el HTML dinámico con los parámetros
+    return render_template('saludo.html', nombre=nombre, usuario=usuario)
+
 
 @app.errorhandler(404)
 def api_not_found(error):
