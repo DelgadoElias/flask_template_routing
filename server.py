@@ -1,4 +1,5 @@
 from flask import Flask, make_response, request, render_template
+
 app = Flask(__name__)
 
 data = [
@@ -59,9 +60,18 @@ data = [
     }
 ]
 
+
 @app.route("/")
 def index():
     return "hello world"
+
+
+@app.route("/app")
+@app.route("/home")
+@app.route("/index")
+def home():
+    return "Hello World!"
+
 
 @app.route("/no_content")
 def no_content():
@@ -72,6 +82,7 @@ def no_content():
     """
     return ({}, 204)
 
+
 @app.route("/exp")
 def index_explicit():
     """return 'Hello World' message with a status code of 200
@@ -80,7 +91,7 @@ def index_explicit():
         string: Hello World
         status code: 200
     """
-    resp = make_response({ "message": "Hello World"})
+    resp = make_response({"message": "Hello World"})
     resp.status_code = 200
     return resp
 
@@ -95,6 +106,7 @@ def get_data():
     except NameError:
         return {"message": "Data not found"}, 404
 
+
 @app.route("/name_search")
 def name_search():
     """find a person in the database
@@ -106,7 +118,7 @@ def name_search():
     """
     search_query = request.args.get('q', '')
     if not search_query:
-        return { "message": "Argument 'q' is missing"}, 422
+        return {"message": "Argument 'q' is missing"}, 422
 
     for person in data:
         if search_query.lower() in person["first_name"].lower():
@@ -114,24 +126,29 @@ def name_search():
 
     return {"message": "Person not found"}, 404
 
+
 @app.route("/count")
 def count():
     try:
         return {"data count": len(data)}, 200
     except NameError:
         return {"message": "data not defined"}, 500
+
+
 @app.route("/person/<uuid:id>")
 def find_by_uuid(id):
     for person in data:
         if person["id"] == str(id):
             return person
     return {"message": "person not found"}, 404
+
+
 @app.route("/person/<uuid:id>", methods=['DELETE'])
 def delete_by_uuid(id):
     for person in data:
         if person["id"] == str(id):
             data.remove(person)
-            return {"message":f"{id}"}, 200
+            return {"message": f"{id}"}, 200
     return {"message": "person not found"}, 404
 
 
@@ -147,6 +164,7 @@ def add_by_uuid():
         return {"message": "data not defined"}, 500
     return {"message": f"{new_person['id']}"}, 200
 
+
 @app.route('/saludo')
 def saludo():
     # Obtener los parámetros de la URL
@@ -155,6 +173,7 @@ def saludo():
 
     # Renderizar el HTML dinámico con los parámetros
     return render_template('saludo.html', nombre=nombre, usuario=usuario)
+
 
 @app.route('/saludo/<nombre>/<usuario>')
 def saludo_params(nombre, usuario):
